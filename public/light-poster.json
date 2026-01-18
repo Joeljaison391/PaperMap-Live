@@ -1,0 +1,33 @@
+{
+    "version": 8,
+    "name": "Light Poster",
+    "sources": {
+        "osm-raster": {
+            "type": "raster",
+            "tiles": ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+            "tileSize": 256,
+            "attribution": "\u00a9 OpenStreetMap contributors"
+        }
+    },
+    "layers": [
+        {
+            "id": "background",
+            "type": "background",
+            "paint": {
+                "background-color": "#f5f5f0"
+            }
+        },
+        {
+            "id": "osm-tiles",
+            "type": "raster",
+            "source": "osm-raster",
+            "paint": {
+                "raster-opacity": 0.9,
+                "raster-brightness-min": 0.2,
+                "raster-brightness-max": 0.8,
+                "raster-contrast": -0.1,
+                "raster-saturation": -0.4
+            }
+        }
+    ]
+}
