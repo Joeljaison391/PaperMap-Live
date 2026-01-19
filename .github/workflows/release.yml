@@ -31,7 +31,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build and release
+      - name: Check for signing keys
+        id: check_keys
+        shell: bash
+        run: |
+          if [ -n "${{ secrets.TAURI_PRIVATE_KEY }}" ] && [ -n "${{ secrets.TAURI_KEY_PASSWORD }}" ]; then
+            echo "keys_available=true" >> $GITHUB_OUTPUT
+            echo "✅ Signing keys found - build will be signed"
+          else
+            echo "keys_available=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Signing keys not found - build will be unsigned"
+          fi
+
+      - name: Build and release (with signing)
+        if: steps.check_keys.outputs.keys_available == 'true'
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,6 +53,45 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'PaperMap Live v__VERSION__'
-          releaseBody: 'See the assets to download and install this version.'
+          releaseBody: |
+            ## 🎉 PaperMap Live v__VERSION__
+            
+            ✅ **Signed Release** - This build is cryptographically signed and supports auto-updates.
+            
+            ### 📦 Installation
+            Download the `.msi` installer below and run it.
+            
+            ### 🔄 Auto-Updates
+            If you have a previous version installed, the app will automatically check for updates.
+            
+            ---
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.ref_name }}...HEAD
+          releaseDraft: false
+          prerelease: false
+
+      - name: Build and release (without signing)
+        if: steps.check_keys.outputs.keys_available == 'false'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'PaperMap Live v__VERSION__ (Unsigned)'
+          releaseBody: |
+            ## 🎉 PaperMap Live v__VERSION__
+            
+            ⚠️ **Unsigned Release** - This build is not signed. Auto-updates are not available.
+            
+            ### 📦 Installation
+            Download the `.msi` installer below and run it.
+            
+            ### 🔐 Why unsigned?
+            Signing keys were not configured in GitHub Secrets. To enable signed builds and auto-updates:
+            1. Generate keys: `npm run tauri signer generate`
+            2. Add `TAURI_PRIVATE_KEY` and `TAURI_KEY_PASSWORD` to repository secrets
+            3. Create a new release
+            
+            ---
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.ref_name }}...HEAD
           releaseDraft: false
           prerelease: false
