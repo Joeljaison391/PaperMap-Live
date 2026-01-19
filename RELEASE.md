@@ -1,59 +1,40 @@
-# PaperMap Live - Release Setup Guide
+# Release Notes
 
-## Version 1.0.0
+## v1.0.0 - Initial Release
 
-### Prerequisites
+### Features Added
 
-1. **Generate Update Keys**
-   ```bash
-   npm run tauri signer generate -- -w ~/.tauri/myapp.key
-   ```
-   This creates a private key and outputs a public key.
+- 🗺️ **Live Map Wallpaper** - Real-time animated map as desktop background using WorkerW injection
+- 🌙 **Dark Theme** - Pure black background with neon green roads
+- ☀️ **Light Theme** - Clean minimal aesthetic
+- 📍 **9 Major Cities** - Dubai, New York, Tokyo, London, Paris, Singapore, Hong Kong, Los Angeles, India
+- 🖥️ **Multi-Monitor Support** - Position wallpaper on primary, secondary, or span across all monitors
+- 🎨 **Typography Controls** - Customizable font, size, position, and coordinate display
+- ⚡ **Performance Settings** - Quality presets (Low, Medium, High, Ultra), FPS control, hardware acceleration
+- 🌫️ **Blur Control** - Adjustable Gaussian blur (0-10px)
+- 💾 **Tile Caching** - Smooth animation with intelligent tile preloading
+- 🔄 **Auto-Updates** - Automatic update detection and installation
+- 🎯 **GPU Acceleration** - WebGL2 hardware rendering
+- 🪟 **Windows Integration** - Native wallpaper injection below desktop icons
 
-2. **Add GitHub Secrets**
-   Go to GitHub Repository Settings → Secrets and variables → Actions:
-   - `TAURI_PRIVATE_KEY`: Content of `~/.tauri/myapp.key`
-   - `TAURI_KEY_PASSWORD`: Password you set (if any, otherwise empty)
+### Tech Stack
 
-3. **Update tauri.conf.json**
-   - Replace `YOUR_USERNAME` in the updater endpoint with your GitHub username
-   - Replace `YOUR_PUBLIC_KEY_HERE` with the public key from step 1
+- Tauri 2.0 + Rust
+- React 19.1 + TypeScript
+- MapLibre GL JS 5.16
+- OpenStreetMap tiles
+- WebGL2 rendering
 
-### Creating a Release
+### Upcoming Features
 
-1. **Tag a version:**
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
+- 🗺️ **MBTiles Support** - Offline map data for better performance
+- 📍 **Custom Locations** - Manual coordinate input
+- 🎨 **Custom Themes** - User-defined color schemes
+- 🖼️ **Export** - Save map as high-res image
+- 🌍 **More Cities** - Expanded location library
+- ⏰ **Time-based Themes** - Auto-switch based on time of day
+- 📊 **Performance Monitoring** - FPS and resource usage overlay
 
-2. The GitHub Action will automatically:
-   - Build the Windows installer (.msi)
-   - Sign it with your private key
-   - Create a GitHub Release
-   - Generate `latest.json` for auto-updates
+### Known Issues
 
-### Testing Auto-Update
-
-1. Install v1.0.0 on your machine
-2. Create a new tag (v1.0.1)
-3. The app will automatically check for updates on startup
-4. Users will see an update dialog
-
-### Manual Build
-
-```bash
-npm install
-npm run tauri build
-```
-
-Output will be in `src-tauri/target/release/bundle/`
-
-### Features
-
-- 🗺️ High-fidelity map wallpaper engine
-- 🌙 Dark theme with neon green roads
-- 🖥️ Multi-monitor support
-- 🎨 Customizable typography and styling
-- ⚡ Hardware-accelerated rendering
-- 🔄 Automatic updates via GitHub Releases
+None reported
